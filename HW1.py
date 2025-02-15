@@ -12,19 +12,50 @@ from collections import Counter
 # ------ TASK 1: READING DATA  --------
 
 # 1.1
-def read_ratings_data(f):
+def read_ratings_data(filename):
     # parameter f: movie ratings file name f (e.g. "movieRatingSample.txt")
     # return: dictionary that maps movie to ratings
     # WRITE YOUR CODE BELOW
-    pass
+    movieRatingDict = {}
+
+    with open(filename, 'r') as f:
+        for line in f:
+            if line.strip():
+
+                movie, rating, rater = line.split('|')  
+                # If movie is not in dictionary, add it with an empty list
+                rating = float(rating.strip())
+            if movie not in movieRatingDict:
+                movieRatingDict[movie] = []
+            
+            # Append rating to the movie's list
+            movieRatingDict[movie].append(rating)
+
+    #print(movieRatingDict)
+    return(movieRatingDict) 
+    
     
 
 # 1.2
-def read_movie_genre(f):
+def read_movie_genre(filename):
     # parameter f: movies genre file name f (e.g. "genreMovieSample.txt")
     # return: dictionary that maps movie to genre
     # WRITE YOUR CODE BELOW
-    pass
+    movieGenreDict = {}
+
+    with open(filename, 'r') as f:
+        for line in f:
+            if line.strip():
+
+                genre, id, movie = line.split('|')  
+        
+            # Append results to the movie's list
+            movieGenreDict[movie.strip()] = genre.strip()
+    
+    # print(movieGenreDict) 
+    
+    return(movieGenreDict)
+
 
 # ------ TASK 2: PROCESSING DATA --------
 
@@ -33,14 +64,32 @@ def create_genre_dict(d):
     # parameter d: dictionary that maps movie to genre
     # return: dictionary that maps genre to movies
     # WRITE YOUR CODE BELOW
-    pass
+
+
+    genreDict = {}
+
+    for movie,genre in d.items():
+        if genre not in genreDict:
+            genreDict[genre] = []
+        genreDict[genre].append(movie)
+
+    #print(genreDict)
+
     
 # 2.2
 def calculate_average_rating(d):
     # parameter d: dictionary that maps movie to ratings
     # return: dictionary that maps movie to average rating
     # WRITE YOUR CODE BELOW
-    pass
+    ratingDict = {}
+
+    for movie, rating in d.items():
+        if rating:
+            avgRating = sum(rating) / len(rating)
+        ratingDict[movie] = avgRating
+
+    print(ratingDict)
+    return(ratingDict)
     
 # ------ TASK 3: RECOMMENDATION --------
 
@@ -121,7 +170,22 @@ def recommend_movies(user_id, user_to_movies, movie_to_genre, movie_to_average_r
 def main():
     # write all your test code here
     # this function will be ignored by us when grading
-    pass
+    print("fuck")
+
+    filename = "samplerating.txt"
+    read_ratings_data(filename)
+
+    averageRatingDict = read_ratings_data(filename)
+    calculate_average_rating(averageRatingDict)
+
+
+
+    # filename = "samplemovies.txt"
+    # processingDict = read_movie_genre(filename)
+
+    # create_genre_dict(processingDict)
+
+
     
 # DO NOT write ANY CODE (including variable names) outside of any of the above functions
 # In other words, ALL code your write (including variable names) MUST be inside one of
