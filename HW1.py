@@ -74,6 +74,7 @@ def create_genre_dict(d):
         genreDict[genre].append(movie)
 
     #print(genreDict)
+    return(genreDict)
 
     
 # 2.2
@@ -88,7 +89,7 @@ def calculate_average_rating(d):
             avgRating = sum(rating) / len(rating)
         ratingDict[movie] = avgRating
 
-    print(ratingDict)
+    #print(ratingDict)
     return(ratingDict)
     
 # ------ TASK 3: RECOMMENDATION --------
@@ -100,7 +101,17 @@ def get_popular_movies(d, n=10):
     # return: dictionary that maps movie to average rating, 
     #         in ranked order from highest to lowest average rating
     # WRITE YOUR CODE BELOW
-    pass
+    topNMovies={}
+
+    sortedMovies = sorted(d.items(), key=lambda x: x[1], reverse= True)
+
+    for movie, rating in d.items():
+        topNMovies = dict(sortedMovies[:n])
+        
+
+    #print(topNMovies)
+
+    return(topNMovies)
     
 # 3.2
 def filter_movies(d, thres_rating=3):
@@ -108,7 +119,14 @@ def filter_movies(d, thres_rating=3):
     # parameter thres_rating: threshold rating, default value 3
     # return: dictionary that maps movie to average rating
     # WRITE YOUR CODE BELOW
-    pass
+    filteredMovies = {}
+
+    for movie, rating in d.items():
+        if rating >= thres_rating:
+            filteredMovies[movie] = rating
+
+    #print(filteredMovies)
+    return(filteredMovies)
     
 # 3.3
 def get_popular_in_genre(genre, genre_to_movies, movie_to_average_rating, n=5):
@@ -118,7 +136,18 @@ def get_popular_in_genre(genre, genre_to_movies, movie_to_average_rating, n=5):
     # parameter n: integer (for top n), default value 5
     # return: dictionary that maps movie to average rating
     # WRITE YOUR CODE BELOW
-    pass
+    newRatingDict = {}
+
+    moviesInGenre = genre_to_movies.get(genre, [])
+
+    movieRatings = [(movie, movie_to_average_rating[movie]) for movie in moviesInGenre if movie in movie_to_average_rating]
+
+    sortedMovies = sorted(movieRatings, key=lambda x: x[1], reverse= True)
+
+    newRatingDict = dict(sortedMovies[:n])
+
+    #print(newRatingDict)
+    return(newRatingDict)
     
 # 3.4
 def get_genre_rating(genre, genre_to_movies, movie_to_average_rating):
@@ -127,7 +156,24 @@ def get_genre_rating(genre, genre_to_movies, movie_to_average_rating):
     # parameter movie_to_average_rating: dictionary  that maps movie to average rating
     # return: average rating of movies in genre
     # WRITE YOUR CODE BELOW
-    pass
+    genreRatingDict = {}
+    count = 0
+    newRating = 0
+
+    moviesInGenre = genre_to_movies.get(genre, [])
+    movieRatings = [(movie, movie_to_average_rating[movie]) for movie in moviesInGenre if movie in movie_to_average_rating]
+    #print(movieRatings) 
+    for movie, rating in movieRatings:
+        newRating += rating
+        count += 1
+        #print(rating)
+
+    #print(newRating)
+    avgRating = newRating / count
+    #print(avgRating)
+    return(avgRating)
+
+
     
 # 3.5
 def genre_popularity(genre_to_movies, movie_to_average_rating, n=5):
@@ -136,7 +182,36 @@ def genre_popularity(genre_to_movies, movie_to_average_rating, n=5):
     # parameter n: integer (for top n), default value 5
     # return: dictionary that maps genre to average rating
     # WRITE YOUR CODE BELOW
-    pass
+    genrePopDict = {}
+    avgRating = 0
+    
+    for genre, movieInGenre in genre_to_movies.items():
+        newRating = 0
+        count = 0
+        movieRatings = [(movie, movie_to_average_rating[movie]) for movie in movieInGenre if movie in movie_to_average_rating]
+       #print(movieRatings)
+
+        for movie, rating in movieRatings:
+            newRating += rating
+            count += 1
+            if count > 0:
+                    avgRating = newRating / count
+            else:
+                    avgRating = 0
+        
+        genrePopDict[genre] = avgRating
+    
+    genreRatingsort = sorted(genrePopDict.items(), key =lambda x:x[1], reverse = True)
+
+    print(genreRatingsort)
+    return(genreRatingsort)
+
+    
+
+
+
+
+
 
 # ------ TASK 4: USER FOCUSED  --------
 
@@ -176,14 +251,23 @@ def main():
     read_ratings_data(filename)
 
     averageRatingDict = read_ratings_data(filename)
-    calculate_average_rating(averageRatingDict)
+    avgRating = calculate_average_rating(averageRatingDict)
+
+    filter = get_popular_movies(avgRating)
+    filter_movies(filter)
 
 
 
-    # filename = "samplemovies.txt"
-    # processingDict = read_movie_genre(filename)
+    filename = "samplemovies.txt"
+    processingDict = read_movie_genre(filename)
 
-    # create_genre_dict(processingDict)
+    genreDict = create_genre_dict(processingDict)
+
+    #get_popular_in_genre('Action', genreDict, avgRating)
+    get_genre_rating('Action', genreDict, avgRating)
+
+    genre_popularity(genreDict,avgRating)
+
 
 
     
